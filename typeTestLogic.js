@@ -109,7 +109,7 @@ let splitCur = current.split('');
 
 // Displays the current word to be typed on the web page
 const textBox = document.getElementById("textBox");
-let textElement = document.createElement('p');
+let textElement = document.createElement('span');
 textElement.id = "current-word";
 let word = document.createTextNode(current);
 textElement.appendChild(word);
@@ -119,7 +119,28 @@ textElement.style.fontWeight = "bold";
 // 
 
 const input = document.querySelector("input").addEventListener("keyup", function(e){
-    return wordCheck(e.target.value, current,);
+    
+    let input = document.querySelector('input');
+    console.log((e.target.value.charCodeAt((e.target.value.length)-1)));
+    console.log(e.target.value.length);
+    if((e.target.value.charCodeAt((e.target.value.length)-1) === 32)&&(e.target.value.length != 1)){
+
+        
+        input.value = "";
+
+        let next = data[randomValue()];
+        document.getElementById("current-word").remove();
+        let newTextElement = document.createElement('span');
+        newTextElement.id = "current-word";
+        let newWord = document.createTextNode(next);
+        newTextElement.appendChild(newWord);
+        textBox.appendChild(newTextElement);
+        newTextElement.style.fontWeight = "bold";
+        current = next;
+    }else{
+        
+        return wordCheck(e.target.value, current);
+    }
 })
 
 
@@ -133,11 +154,22 @@ function randomValue(){
 // function to check the spelling
 function wordCheck(e,word){
     let node = document.getElementById("current-word");
+    console.log(word);
+    console.log(word.includes(e));
     if(word.includes(e)){
-        console.log("true");
-        node.style.color = "green";
-    } else{
-        console.log("false");
-        node.style.color = "red";
+        if(e === ''){
+            node.style.backgroundColor = "transparent";
+            node.style.color = "white";
+        }else{
+            
+            node.style.backgroundColor = "green";
+            node.style.color = "black";
+        }
+    } 
+    
+    else{
+        
+        node.style.backgroundColor = "red";
+        node.style.color = "black";
     }
 }
