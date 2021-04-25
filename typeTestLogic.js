@@ -105,10 +105,11 @@ let limit = 100;
 // current word to be typed
 let current = data[randomValue()];
 // current word split into an array of characters
-let splitCur = current.split('');
+
 
 // Displays the current word to be typed on the web page
 const textBox = document.getElementById("textBox");
+const textBoxTwo = document.getElementById("textBoxTwo");
 let textElement = document.createElement('span');
 textElement.id = "current-word";
 let word = document.createTextNode(current);
@@ -116,7 +117,34 @@ textElement.appendChild(word);
 textBox.appendChild(textElement);
 textElement.style.fontWeight = "bold";
 
-// 
+let test = []
+test.push(textElement);
+console.log(test);
+
+
+
+// // 
+
+// Displays a line of text
+let currentWords = getNewTextLine(data);
+let nextWords = getNewTextLine(data);
+console.log(currentWords);
+console.log(nextWords);
+document.getElementById("current-word").remove();
+for(let i =0;i < currentWords.length; i++ ){
+    if(i === 0){
+        currentWords[i].id = "current-word";
+    }
+    textBox.appendChild(currentWords[i]);
+
+}
+for(let i =0;i < nextWords.length; i++ ){
+   
+    textBoxTwo.appendChild(nextWords[i]);
+}
+
+let target = Array.from(textBox.querySelectorAll('span'));
+let currentTarget = target.shift()
 
 const input = document.querySelector("input").addEventListener("keyup", function(e){
     
@@ -125,21 +153,26 @@ const input = document.querySelector("input").addEventListener("keyup", function
     console.log(e.target.value.length);
     if((e.target.value.charCodeAt((e.target.value.length)-1) === 32)&&(e.target.value.length != 1)){
 
-        
+        console.log(currentTarget.style.backgroundColor === "grey");
+        if(currentTarget.style.backgroundColor === "grey"){
+            currentTarget.style.color = "green";
+            currentTarget.style.backgroundColor = "transparent";
+        }else{
+            currentTarget.style.color = "red";
+            currentTarget.style.backgroundColor = "transparent";
+        }
         input.value = "";
 
-        let next = data[randomValue()];
-        document.getElementById("current-word").remove();
-        let newTextElement = document.createElement('span');
-        newTextElement.id = "current-word";
-        let newWord = document.createTextNode(next);
-        newTextElement.appendChild(newWord);
-        textBox.appendChild(newTextElement);
-        newTextElement.style.fontWeight = "bold";
-        current = next;
+        currentTarget =target.shift();
+        
+        console.log(target);
+        
+        
+
     }else{
         
-        return wordCheck(e.target.value, current);
+        console.log(currentTarget.innerHTML);
+        return wordCheck(e.target.value, currentTarget);
     }
 })
 
@@ -152,18 +185,18 @@ function randomValue(){
 }
 
 // function to check the spelling
-function wordCheck(e,word){
-    let node = document.getElementById("current-word");
-    console.log(word);
-    console.log(word.includes(e));
-    if(word.includes(e)){
+function wordCheck(e,node){
+
+    
+    if(node.innerHTML.includes(e)){
         if(e === ''){
             node.style.backgroundColor = "transparent";
             node.style.color = "white";
         }else{
             
-            node.style.backgroundColor = "green";
+            node.style.backgroundColor = "grey";
             node.style.color = "black";
+            console.log(node.style.backgroundColor);
         }
     } 
     
@@ -172,4 +205,32 @@ function wordCheck(e,word){
         node.style.backgroundColor = "red";
         node.style.color = "black";
     }
+}
+
+function getNewTextLine(wordData){
+    let box = document.getElementById("textBox");
+    const width = box.offsetWidth - 200;
+    let sumWidth = 0;
+    const wordLine = [];
+    do{
+        let newWord = wordData[randomValue()] ;
+        let newSpan = document.createElement("span");
+        newSpan.id = "test";
+        newSpan.style.color = "white";
+        newSpan.style.fontWeight = "bold";
+        newSpan.style.fontSize = "1.25em";
+        let newTextNode = document.createTextNode(newWord);
+        newSpan.appendChild(newTextNode);
+        box.appendChild(newSpan);
+        sumWidth += newSpan.offsetWidth;
+        
+        wordLine.push(newSpan);
+        document.getElementById("test").remove();
+            
+
+
+    
+    }while(sumWidth < width);
+
+    return wordLine;
 }
