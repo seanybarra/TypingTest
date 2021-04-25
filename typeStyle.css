@@ -36,3 +36,12 @@ body{
     margin: 0;
     color: white;
 }
+
+span{
+    margin: 0 0.17em;
+    
+}
+
+p{
+    margin: 0 0;
+}
