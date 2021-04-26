@@ -100,7 +100,7 @@ const data = ["a",
 "your"];
 
 // limit allows only 100 words to be in the typing test
-let limit = 100;
+let limit = 0;
 
 // current word to be typed
 let current = data[randomValue()];
@@ -119,18 +119,22 @@ textElement.style.fontWeight = "bold";
 
 let test = []
 test.push(textElement);
-console.log(test);
+//console.log(test);
 
 
 
 // // 
 
 // Displays a line of text
+
+// currentWords is the line currently being typed on 
 let currentWords = getNewTextLine(data);
+// nextWords is the incoming text to relplace currentWords
 let nextWords = getNewTextLine(data);
-console.log(currentWords);
-console.log(nextWords);
+
 document.getElementById("current-word").remove();
+console.log(nextWords);
+// Assigning currentWords
 for(let i =0;i < currentWords.length; i++ ){
     if(i === 0){
         currentWords[i].id = "current-word";
@@ -138,22 +142,29 @@ for(let i =0;i < currentWords.length; i++ ){
     textBox.appendChild(currentWords[i]);
 
 }
+
+// Assigning nextWords
 for(let i =0;i < nextWords.length; i++ ){
    
     textBoxTwo.appendChild(nextWords[i]);
 }
 
+// Turning NodeList into an array
 let target = Array.from(textBox.querySelectorAll('span'));
+console.log(target)
+
+// currentTarget is the current word being typed out
 let currentTarget = target.shift()
+console.log(currentTarget);
 
 const input = document.querySelector("input").addEventListener("keyup", function(e){
     
     let input = document.querySelector('input');
-    console.log((e.target.value.charCodeAt((e.target.value.length)-1)));
-    console.log(e.target.value.length);
+    let temp = nextWords
+    
     if((e.target.value.charCodeAt((e.target.value.length)-1) === 32)&&(e.target.value.length != 1)){
 
-        console.log(currentTarget.style.backgroundColor === "grey");
+        let holder = temp;
         if(currentTarget.style.backgroundColor === "grey"){
             currentTarget.style.color = "green";
             currentTarget.style.backgroundColor = "transparent";
@@ -165,13 +176,38 @@ const input = document.querySelector("input").addEventListener("keyup", function
 
         currentTarget =target.shift();
         
-        console.log(target);
+        if(currentTarget === undefined){
+            console.log(holder)
+            console.log(currentWords);
+            removeChildren(textBox);
+            addChildren(textBox,holder);
+            target = Array.from(textBox.querySelectorAll('span'));
+            currentTarget = target.shift(); 
+            removeChildren(textBoxTwo)
+            console.log(currentTarget)
+            let basic = getNewTextLine(data);
+            addChildren(textBoxTwo,basic)
+            
+            nextWords = basic;
+            
+            
+           // console.log(currentWords);
+            // for(let i = 0; i < currentWords.length; i++){
+            //     textBox.appendChild(currentWords[i]);
+            // }
+              
+            
+            // removeChildren(textBoxTwo);
+            //  for(let a = 0; a < nextWords; a++){
+            //     textBoxTwo.appendChild(nextWords[a]);
+            //  }
+        }
         
         
 
     }else{
         
-        console.log(currentTarget.innerHTML);
+      
         return wordCheck(e.target.value, currentTarget);
     }
 })
@@ -187,7 +223,7 @@ function randomValue(){
 // function to check the spelling
 function wordCheck(e,node){
 
-    
+    console.log(node.innerHTML);
     if(node.innerHTML.includes(e)){
         if(e === ''){
             node.style.backgroundColor = "transparent";
@@ -196,7 +232,7 @@ function wordCheck(e,node){
             
             node.style.backgroundColor = "grey";
             node.style.color = "black";
-            console.log(node.style.backgroundColor);
+            
         }
     } 
     
@@ -215,7 +251,7 @@ function getNewTextLine(wordData){
     do{
         let newWord = wordData[randomValue()] ;
         let newSpan = document.createElement("span");
-        newSpan.id = "test";
+        //newSpan.id = "test";
         newSpan.style.color = "white";
         newSpan.style.fontWeight = "bold";
         newSpan.style.fontSize = "1.25em";
@@ -225,7 +261,7 @@ function getNewTextLine(wordData){
         sumWidth += newSpan.offsetWidth;
         
         wordLine.push(newSpan);
-        document.getElementById("test").remove();
+       // document.getElementById("test").remove();
             
 
 
@@ -233,4 +269,20 @@ function getNewTextLine(wordData){
     }while(sumWidth < width);
 
     return wordLine;
+}
+
+function removeChildren(parent){
+    while(parent.firstChild){
+        parent.removeChild(parent.firstChild);
+    }
+
+}
+
+function addChildren(parent,nodes){
+    
+    for(let i = 0; i < nodes.length; i++){
+        
+        parent.appendChild(nodes[i]);
+    }
+
 }
