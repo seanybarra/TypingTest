@@ -45,3 +45,11 @@ span{
 p{
     margin: 0 0;
 }
+
+#countdown {
+    color: white;
+    margin: 0;
+    padding: 0;float: right;
+    font-size: 1.25em;
+    font-weight: bold;
+}
