@@ -99,8 +99,21 @@ const data = ["a",
 "you",
 "your"];
 
-// limit allows only 100 words to be in the typing test
-let limit = 0;
+// how we will manage a persons typing stats
+let stats = {
+    correct: 0,
+    wrong: 0,
+    wmp: 0,
+    start: false
+};
+
+// total minutes is the time for typing test represented in minutes
+const timeMinute = 1;
+// Time variable will hold the amount of time in seconds
+let timeLimit = timeMinute * 60;
+let timeHolder =0 ;
+// Get the html element for the countdown
+let timer = document.getElementById('countdown');
 
 // current word to be typed
 let current = data[randomValue()];
@@ -156,21 +169,26 @@ console.log(target)
 // currentTarget is the current word being typed out
 let currentTarget = target.shift()
 console.log(currentTarget);
+let timeInput = document.querySelector("input").addEventListener("click",setTimer);
 
 const input = document.querySelector("input").addEventListener("keyup", function(e){
     
     let input = document.querySelector('input');
     let temp = nextWords
+
+ 
     
-    if((e.target.value.charCodeAt((e.target.value.length)-1) === 32)&&(e.target.value.length != 1)){
+    if((e.target.value.charCodeAt((e.target.value.length)-1) === 32)){
 
         let holder = temp;
         if(currentTarget.style.backgroundColor === "grey"){
             currentTarget.style.color = "green";
             currentTarget.style.backgroundColor = "transparent";
+            stats.correct += 1;
         }else{
             currentTarget.style.color = "red";
             currentTarget.style.backgroundColor = "transparent";
+            stats.wrong += 1;
         }
         input.value = "";
 
@@ -189,20 +207,14 @@ const input = document.querySelector("input").addEventListener("keyup", function
             addChildren(textBoxTwo,basic)
             
             nextWords = basic;
-            
-            
-           // console.log(currentWords);
-            // for(let i = 0; i < currentWords.length; i++){
-            //     textBox.appendChild(currentWords[i]);
-            // }
-              
-            
-            // removeChildren(textBoxTwo);
-            //  for(let a = 0; a < nextWords; a++){
-            //     textBoxTwo.appendChild(nextWords[a]);
-            //  }
+        
         }
         
+        
+    if(timeLimit === -1){
+       // stopTimer(timeHolder);
+        input.setAttribute("disabled","disabled");
+    }
         
 
     }else{
@@ -242,6 +254,8 @@ function wordCheck(e,node){
         node.style.color = "black";
     }
 }
+
+
 
 function getNewTextLine(wordData){
     let box = document.getElementById("textBox");
@@ -285,4 +299,25 @@ function addChildren(parent,nodes){
         parent.appendChild(nodes[i]);
     }
 
+}
+function setTimer(){
+    timeHolder = setInterval(updateTimeLimit,1000);
+}
+
+function stopTimer(){
+    clearInterval(timeHolder);
+}
+function updateTimeLimit(){
+    
+    const minutes = Math.floor(timeLimit/60);
+    let seconds = timeLimit % 60;
+    if(timeLimit != -1){
+        seconds = seconds < 10 ? '0'+ seconds : seconds;
+        timer.innerHTML = `${minutes}:${seconds}`;
+        timeLimit--;
+    }else{
+        timer.innerHTML = `${stats.correct} WPM | Correct Words: ${stats.correct} | Wrong Words: ${stats.wrong}`;
+    }
+    
+    
 }
